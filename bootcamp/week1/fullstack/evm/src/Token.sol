@@ -15,6 +15,7 @@ contract Token {
         name = _name;
         symbol = _symbol;
         decimals = _decimals;
+        balanceOf[msg.sender] = 1000 * 10**_decimals;
     }
 
     function transfer(

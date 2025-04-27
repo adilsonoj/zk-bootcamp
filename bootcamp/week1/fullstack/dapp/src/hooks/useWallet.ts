@@ -1,10 +1,10 @@
-import { Address, createWalletClient, custom } from "viem";
+import { Address, createWalletClient, custom, WalletClient } from "viem";
 import { anvil } from "viem/chains";
 import { useState, useEffect } from "react";
 
 export function useWallet() {
-  const [account, setAccount] = useState<Address | null>(null);
-  const [client, setClient] = useState<any>(null);
+  const [account, setAccount] = useState<Address>("0x0");
+  const [client, setClient] = useState<WalletClient>();
   const [error, setError] = useState<string | null>(null);
 
   const connectWallet = async () => {
@@ -38,8 +38,9 @@ export function useWallet() {
           transport: custom(window.ethereum),
         });
 
-        // Verifica se já há contas conectadas
-        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+        const accounts = await window.ethereum.request({
+          method: "eth_accounts",
+        });
         if (accounts.length > 0) {
           setClient(walletClient);
           setAccount(accounts[0]);

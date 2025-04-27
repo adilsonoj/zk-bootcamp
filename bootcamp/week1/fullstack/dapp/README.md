@@ -64,7 +64,7 @@ export default App;
 
 ## 5.1 Hook de Wallet
 
-### pasta
+### `useWallet.ts`
 
 ```bash
 ├── src
@@ -74,8 +74,6 @@ export default App;
 │   └── main.jsx
 └── ...
 ```
-
-### `useWallet.ts`
 
 ```js
 import { Address, createWalletClient, custom } from "viem";
@@ -141,6 +139,14 @@ export function useWallet() {
 
 ### `global.d.ts`
 
+```bash
+├── src
+│   ├── ...
+│   ├── global.d.ts
+│   └── main.jsx
+└── ...
+```
+
 ```js
 interface Window {
   ethereum?: {
@@ -154,7 +160,16 @@ interface Window {
 }
 ```
 
-### 5.2 Componente `ConnectWalletButton`
+### Componente `ConnectWalletButton`
+
+```bash
+├── src
+│   ├── ...
+│   ├── components
+│   │   └── ConnectWalletButton.tsx
+│   └── main.jsx
+└── ...
+```
 
 ```js
 import React from "react";
@@ -191,4 +206,19 @@ export function ConnectWalletButton({
 }
 ```
 
-### 5.3 Hook de Contratos
+## 5.2 Hook de Contratos
+
+### `useContract.ts`
+
+```bash
+├── src
+│   ├── ...
+│   ├── hooks
+│   │   └── useContract.ts
+│   └── main.jsx
+└── ...
+```
+
+```js
+
+```
