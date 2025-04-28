@@ -25,6 +25,24 @@ export function Dashboard({
   const [error, setError] = useState<string | null>(null);
   const formattedBalance = balance / BigInt(10) ** BigInt(decimals);
 
+  // Formata a mensagem de erro para exibição
+  const formatErrorMessage = (error: string) => {
+    // Remove partes técnicas comuns de erros da blockchain
+    let formattedError = error;
+    
+    // Remove prefixos longos de erro
+    if (formattedError.includes(': ')) {
+      formattedError = formattedError.split(': ').slice(-1)[0];
+    }
+    
+    // Limita o comprimento da mensagem
+    if (formattedError.length > 300) {
+      formattedError = formattedError.substring(0, 300) + '...';
+    }
+    
+    return formattedError;
+  };
+
   const readBalance = async () => {
     try {
       const _balance = await contract.read.balanceOf([account]);
@@ -104,44 +122,99 @@ export function Dashboard({
     }
   };
 
+  const dismissError = () => {
+    setError(null);
+  };
+
+  // Impede o scroll quando o erro está aberto
+  useEffect(() => {
+    if (error) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [error]);
+
   return (
     <div>
-      <p>Carteira conectada: {account}</p>
-      <p>Token: {name}</p>
-      <p>
-        Saldo: {formattedBalance} {symbol}
-      </p>
+      <div className="info">
+        <i className="fas fa-wallet"></i>
+        <span>Carteira conectada: {account.substring(0, 6)}...{account.substring(account.length - 4)}</span>
+      </div>
+      <div className="info">
+        <i className="fas fa-coins"></i>
+        <span>Token: {name}</span>
+      </div>
+      <div className="info">
+        <i className="fas fa-balance-scale"></i>
+        <span>Saldo: <span id="balance">{formattedBalance.toString()}</span> {symbol}</span>
+      </div>
 
-      <button onClick={mintTokens} disabled={isMinting}>
+      <button className="claim-btn" onClick={mintTokens} disabled={isMinting}>
         {isMinting ? "Minting..." : "Claim your Tokens!"}
       </button>
 
       {balance > 0n && (
-        <div>
-          <h3>Transferir Tokens</h3>
-          <input
-            type="text"
-            placeholder="Endereço de destino (0x...)"
-            value={transferTo}
-            onChange={(e) => setTransferTo(e.target.value)}
-            disabled={isTransferring}
-          />
-          <input
-            type="number"
-            placeholder="Quantidade"
-            value={transferAmount}
-            onChange={(e) => setTransferAmount(e.target.value)}
-            disabled={isTransferring}
-            min="0"
-            step="0.0001"
-          />
-          <button onClick={transferTokens} disabled={isTransferring}>
-            {isTransferring ? "Transferindo..." : "Transferir"}
-          </button>
+        <div className="transfer-section">
+          <h2 className="transfer-title">Transferir Tokens</h2>
+          <div className="transfer-form">
+            <input
+              type="text"
+              className="transfer-input"
+              placeholder="Endereço de destino (0x...)"
+              value={transferTo}
+              onChange={(e) => setTransferTo(e.target.value)}
+              disabled={isTransferring}
+              style={{ width: "300px" }}
+            />
+            <input
+              type="number"
+              className="transfer-input"
+              placeholder="Quantidade"
+              value={transferAmount}
+              onChange={(e) => setTransferAmount(e.target.value)}
+              disabled={isTransferring}
+              min="0"
+              step="0.0001"
+              style={{ width: "150px" }}
+            />
+            <button 
+              className="transfer-btn" 
+              onClick={transferTokens} 
+              disabled={isTransferring}
+            >
+              {isTransferring ? "Transferindo..." : "Transferir"}
+            </button>
+          </div>
         </div>
       )}
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && (
+        <div className="error-popup-overlay" onClick={dismissError}>
+          <div className="error-popup" onClick={(e) => e.stopPropagation()}>
+            <button className="error-popup-close" onClick={dismissError}>
+              <i className="fas fa-times"></i>
+            </button>
+            
+            <div className="error-popup-title">
+              <i className="fas fa-exclamation-triangle"></i>
+              <h3>Erro na Operação</h3>
+            </div>
+            
+            <div className="error-popup-content">
+              {formatErrorMessage(error)}
+            </div>
+            
+            <button className="error-popup-button" onClick={dismissError}>
+              Entendi
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
