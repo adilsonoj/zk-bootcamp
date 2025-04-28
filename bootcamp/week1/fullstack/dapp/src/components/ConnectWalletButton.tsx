@@ -1,5 +1,5 @@
-import React from 'react';
-import { Address } from 'viem';
+import { Address } from "viem";
+import React from "react";
 
 interface ConnectWalletButtonProps {
   account: Address | null;
@@ -7,22 +7,17 @@ interface ConnectWalletButtonProps {
   connectWallet: () => Promise<void>;
 }
 
-export function ConnectWalletButton({ account, error, connectWallet }: ConnectWalletButtonProps) {
+export function ConnectWalletButton({
+  account,
+  error,
+  connectWallet,
+}: ConnectWalletButtonProps) {
+
+  console.log("foi")
   return (
-    <div style={{ textAlign: 'center' }}>
-      {!account && (
-        <button
-          onClick={connectWallet}
-          style={{
-            padding: '10px 20px',
-            fontSize: '16px',
-            cursor: 'pointer',
-          }}
-        >
-          Conectar MetaMask
-        </button>
-      )}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+    <div>
+      <button onClick={connectWallet}>Conectar MetaMask</button>
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 }
