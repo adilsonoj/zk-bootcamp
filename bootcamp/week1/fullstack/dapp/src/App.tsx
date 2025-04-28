@@ -3,7 +3,7 @@ import { useWallet } from "./hooks/useWallet";
 import { WalletClient } from "viem";
 import React from "react";
 import { Dashboard } from "./components/Dashboard";
-import ParticlesBackground from "./components/ParticlesBackground";
+import ParticlesBackground from "./components/particles/ParticlesBackground";
 import "./styles/global.css";
 
 function App() {
