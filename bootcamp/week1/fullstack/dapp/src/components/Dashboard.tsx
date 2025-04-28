@@ -18,28 +18,39 @@ export function Dashboard({
   contract,
 }: DashboardProps) {
   const [balance, setBalance] = useState<bigint>(0n);
+  const [isMinting, setIsMinting] = useState(false);
   const formattedBalance = balance / BigInt(10) ** BigInt(decimals);
 
-  useEffect(() => {
-    const readBalance = async () => {
-      try {
-        const _balance = await contract.read.balanceOf([account]);
-        setBalance(_balance);
-      } catch (error) {
-        console.error("Erro ao ler o balance:", error);
-      }
-    };
+  const readBalance = async () => {
+    try {
+      const _balance = await contract.read.balanceOf([account]);
+      setBalance(_balance);
+    } catch (error) {
+      console.error("Erro ao ler o balance:", error);
+    }
+  };
 
+  useEffect(() => {
     readBalance();
-  }, []);
+  }, [account, contract]);
 
   const mintTokens = async () => {
     console.log("Minting tokens...");
+    setIsMinting(true);
     try {
-      const tx = await contract.write.mint({}, { account });
-      console.info(tx);
+      const tx = await contract.write.mint([], { account });
+      console.log("Transaction sent:", tx);
+
+      // Aguarda a confirmação da transação
+      const receipt = await provider.waitForTransactionReceipt({ hash: tx });
+      console.log("Transaction confirmed:", receipt);
+
+      // Atualiza o saldo após a confirmação
+      await readBalance();
     } catch (error) {
       console.error("Error minting tokens:", error);
+    } finally {
+      setIsMinting(false);
     }
   };
 
@@ -50,8 +61,9 @@ export function Dashboard({
       <p>
         Saldo: {formattedBalance} {symbol}
       </p>
-
-      <button onClick={mintTokens}>Claim your Tokens!</button>
+      <button onClick={mintTokens} disabled={isMinting}>
+        {isMinting ? "Minting..." : "Claim your Tokens!"}
+      </button>
     </div>
   );
 }
