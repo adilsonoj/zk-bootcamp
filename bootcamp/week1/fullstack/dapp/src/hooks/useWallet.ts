@@ -1,5 +1,5 @@
 import { Address, createWalletClient, custom, WalletClient } from "viem";
-import { anvil } from "viem/chains";
+import { sepolia } from "viem/chains";
 import { useState, useEffect } from "react";
 
 export function useWallet() {
@@ -14,7 +14,7 @@ export function useWallet() {
       }
 
       const walletClient = createWalletClient({
-        chain: anvil,
+        chain: sepolia,
         transport: custom(window.ethereum),
       });
 
@@ -34,7 +34,7 @@ export function useWallet() {
         if (!window.ethereum) return;
 
         const walletClient = createWalletClient({
-          chain: anvil,
+          chain: sepolia,
           transport: custom(window.ethereum),
         });
 

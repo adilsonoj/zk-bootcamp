@@ -14,7 +14,7 @@ function App() {
     <>
       <ParticlesBackground />
       <div className="container">
-        <h1 className="title">Web3 Token dApp</h1>
+        <h1 className="title">O Grande Código</h1>
         {account !== "0x0" && contractClient ? (
           <div className="card">
             <Dashboard
